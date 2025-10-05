@@ -42,7 +42,7 @@ def text_split(docs):
     return text_chunks
 
 # Load documents from your PDF folder
-pdf_folder_path = "/Users/srishanthreddy/medical-assistance-chatbot/data/Medical_book.pdf"  # <-- update to your actual path
+pdf_folder_path = "/app/data/Medical_book.pdf"  # <-- update to your actual path
 docs = load_pdf_file(pdf_folder_path)
 
 # Filter documents to minimal docs
