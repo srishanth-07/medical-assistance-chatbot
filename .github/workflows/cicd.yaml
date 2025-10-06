@@ -25,13 +25,12 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Debug image variables
+      - name: Create ECR repository if not exists
         run: |
-          echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}"
-          echo "ECR_REPOSITORY=${{ secrets.ECR_REPO }}"
-          echo "IMAGE_TAG=latest"
+          aws ecr describe-repositories --repository-names "${{ secrets.ECR_REPO }}" || \
+          aws ecr create-repository --repository-name "${{ secrets.ECR_REPO }}"
 
-      - name: Build, tag, and push Docker image
+      - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -39,8 +38,7 @@ jobs:
           IMAGE_TAG: latest
         run: |
           IMAGE_NAME="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          echo "Building Docker image: $IMAGE_NAME"
-          docker build --progress=plain -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME .
           docker push $IMAGE_NAME
           echo "image=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
