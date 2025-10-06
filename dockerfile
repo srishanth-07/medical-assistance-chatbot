@@ -2,13 +2,10 @@ FROM python:3.10-slim-buster
 
 WORKDIR /app
 
-# Copy only requirements first to use Docker layer caching
-COPY requirements.txt .
+# Copy the whole app before installing requirements
+COPY . .
 
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Now copy the rest of the app
-COPY . .
 
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_PORT=8080
